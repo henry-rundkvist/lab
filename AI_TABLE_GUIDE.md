@@ -15,7 +15,7 @@ Every data table needs its own rules table named `TABLENAME_RULES` — for examp
 | Column | Type | Notes |
 |---|---|---|
 | ID | serial primary key | Auto-incremented |
-| TARGET | text, not null | URL-style ALL CAPS path: `*` for rules applying to the whole rules table itself, `TABLENAME` for table-level rules, `TABLENAME/COLUMN_NAME` for column-level rules |
+| TARGET | text, not null | URL-style ALL CAPS path: `*` for rules that apply to the data table as a whole, not to any specific column, `TABLENAME` for table-level rules, `TABLENAME/COLUMN_NAME` for column-level rules |
 | RULE | text, not null | Normal sentence case — first letter capitalised |
 | LOCKED | boolean, not null, default true | When true, row cannot be modified or deleted — only unlockable by a human via Supabase dashboard |
 
@@ -81,7 +81,7 @@ URL-style ALL CAPS paths make it immediately clear what each rule applies to:
 
 | Scope | TARGET | Example |
 |---|---|---|
-| Whole rules table | `*` | Global policies applying to all |
+| Whole data table (no specific column) | `*` | Policies AI must follow when working with any part of this table |
 | Whole data table | `TABLENAME` | `PROSPECTS` |
 | Specific column | `TABLENAME/COLUMN_NAME` | `PROSPECTS/STATUS` |
 
