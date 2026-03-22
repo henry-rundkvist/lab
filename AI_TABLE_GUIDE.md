@@ -69,7 +69,7 @@ HUMAN DESCRIPTION IN ALL CAPS. | AI instructions: always check the [TABLENAME]_R
 
 - Human part in ALL CAPS — easy to scan
 - ` | AI instructions: ` as separator — normal text, clear boundary
-- AI part fully lowercase, always points to the specific rules table for this data table
+- AI part always points to the specific rules table for this data table
 - No line breaks
 - AI instruction is always identical in structure — only the rules table name changes per table
 
