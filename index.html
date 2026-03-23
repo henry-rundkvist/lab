@@ -1,3 +1,6 @@
+Here is the guide with only that one addition — a new checklist item in Section 1 clarifying what the trigger must block:
+
+```markdown
 # SUPABASE AI-MANAGED TABLE GUIDE
 
 A spec for creating Supabase tables managed by AI. Follow this when setting up any new table. All complexity here exists for two reasons: prevent data loss from AI errors, and keep data readable enough for humans to validate at a glance.
@@ -19,7 +22,7 @@ Everything that makes the table safe. Database-level protections are hard constr
 
 - [ ] Create `TABLENAME_RULES` with columns: `ID` (serial primary key), `TARGET` (text, not null), `RULE` (text, not null), `LOCKED` (boolean, not null, default true)
 - [ ] Enable RLS on `TABLENAME_RULES` — allow reads and inserts; add restrictive policies blocking DELETE and UPDATE where LOCKED = TRUE
-- [ ] Add a BEFORE UPDATE trigger on `TABLENAME_RULES`: if OLD.LOCKED = TRUE and NEW.LOCKED = FALSE and current_user NOT IN ('postgres', 'supabase_admin') → raise exception *(prevents AI from unlocking its own constraints — only a superuser can do it via the dashboard)*
+- [ ] Add a BEFORE UPDATE trigger on `TABLENAME_RULES`: block any update on any locked row if current_user NOT IN ('postgres', 'supabase_admin') → raise exception. *(This must block all updates — not just unlock attempts — otherwise AI can freely edit RULE and TARGET on locked rows without touching the LOCKED column. Only a superuser can modify locked rows via the dashboard.)*
 - [ ] Create the data table with an `UPDATED_AT timestamptz` column defaulting to `now()`
 - [ ] Add a BEFORE UPDATE trigger on the data table that sets `UPDATED_AT = now()` on every update
 - [ ] Insert global rule 1 (TARGET = `*`): *All table and column comments must use the format: human-readable description in all caps first, then " | AI instructions: always check the [TABLENAME]_RULES table before doing anything." — this exact phrase is the fixed mandatory ending. No line breaks.*
@@ -39,3 +42,4 @@ Everything that makes the table easy to read, validate, and work with. Covers co
 - [ ] Rule text is sentence case, no line breaks, everything on one line. Column rules start with "When displaying..." or "When writing...". Multiple points use inline numbering: `(1) First; (2) Second; (3) Third`
 - [ ] TARGET uses URL-style ALL CAPS paths: `*` for global, `TABLENAME` for table-level, `TABLENAME/COLUMN_NAME` for column-level
 - [ ] Before changing any rule, show the full before → after text and wait for human approval. Nothing is executed until approved. After the change is made, the rule must be immediately relocked (LOCKED = TRUE)
+```
